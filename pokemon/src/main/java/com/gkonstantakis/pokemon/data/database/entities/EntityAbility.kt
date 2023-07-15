@@ -5,12 +5,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "abilities")
-data class Ability(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "abilityID")
-    var abilityID: Int,
-
-    @ColumnInfo(name = "name")
-    var name: String
+data class EntityAbility(
+    @PrimaryKey
+    @ColumnInfo(name = "ability_name")
+    var abilityName: String
 ) {
 }

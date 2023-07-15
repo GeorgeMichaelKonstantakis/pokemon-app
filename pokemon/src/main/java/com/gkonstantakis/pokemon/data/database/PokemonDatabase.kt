@@ -1,11 +1,11 @@
 package com.gkonstantakis.pokemon.data.database
 
 import androidx.room.Database
-import com.gkonstantakis.pokemon.data.database.entities.Ability
-import com.gkonstantakis.pokemon.data.database.entities.Pokemon
+import com.gkonstantakis.pokemon.data.database.entities.EntityAbility
+import com.gkonstantakis.pokemon.data.database.entities.EntityPokemon
 import com.gkonstantakis.pokemon.data.database.entities.PokemonAbilityCrossRef
 
-@Database(entities = [Pokemon::class, Ability::class, PokemonAbilityCrossRef::class], version = 1)
+@Database(entities = [EntityPokemon::class, EntityAbility::class, PokemonAbilityCrossRef::class], version = 1)
 abstract class PokemonDatabase {
     abstract fun pokemonDao(): PokemonDao
 

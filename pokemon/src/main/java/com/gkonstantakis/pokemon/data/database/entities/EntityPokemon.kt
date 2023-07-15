@@ -5,13 +5,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "pokemons")
-data class Pokemon(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "pokemonID")
-    var pokemonID: Int,
-
-    @ColumnInfo(name = "name")
-    var name: String,
+data class EntityPokemon(
+    @PrimaryKey
+    @ColumnInfo(name = "pokemon_name")
+    var pokemonName: String,
 
     @ColumnInfo(name = "base_experience")
     var baseExperience: Int,
@@ -19,9 +16,6 @@ data class Pokemon(
     @ColumnInfo(name = "height")
     var height: Int,
 
-    @ColumnInfo(name = "thumbnail")
-    var smallImage: String,
-
-    @ColumnInfo(name = "thumbnail")
-    var largeImage: String
+    @ColumnInfo(name = "image")
+    var image: String
 ) {}
