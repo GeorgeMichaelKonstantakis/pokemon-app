@@ -1,4 +1,21 @@
 <resources>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="main_event_subtitle_txt">Popular in Kanto</string>
+    <string name="main_event_name_text">The Dream Continues!</string>
+    <string name="main_event_date_text">Tue 4 Oct</string>
+    <string name="main_event_city_text">Pallet Town</string>
+
+    <string name="events_title_string">This week</string>
+
+    <string name="pokemon_title">Popular Pokemon</string>
+
+    <string name="pokemon_btn_text">Details</string>
+
+    <string name="event_one_subtitle_txt">Legend? Go! Friends? Go!</string>
+    <string name="event_one_date_txt">Sun 18 Oct</string>
+    <string name="event_one_city_txt">Cinnabar Island</string>
+
+    <string name="event_two_subtitle_txt">EXHALE with Professor Oak</string>
+    <string name="event_two_date_txt">Sun 18 Oct</string>
+    <string name="event_two_city_txt">Celadon City</string>
+
 </resources>

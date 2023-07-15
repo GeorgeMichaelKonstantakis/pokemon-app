@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 32
 
     viewBinding {
         enabled true
