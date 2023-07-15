@@ -2,6 +2,7 @@ package com.gkonstantakis.pokemon.data.domain.mappers
 
 import com.gkonstantakis.pokemon.data.database.entities.EntityAbility
 import com.gkonstantakis.pokemon.data.database.entities.EntityPokemon
+import com.gkonstantakis.pokemon.data.database.entities.PokemonAbilityCrossRef
 import com.gkonstantakis.pokemon.data.database.entities.joins.JoinPokemonWithAbilities
 import com.gkonstantakis.pokemon.data.domain.models.Ability
 import com.gkonstantakis.pokemon.data.domain.models.Pokemon
@@ -14,7 +15,8 @@ class DatabaseMapper {
             name = entityPokemon.pokemonName,
             baseExperience = entityPokemon.baseExperience,
             height = entityPokemon.height,
-            image = entityPokemon.image
+            image = entityPokemon.image,
+            weight = entityPokemon.weight
         )
     }
 
@@ -36,13 +38,21 @@ class DatabaseMapper {
             pokemonName = pokemon.name,
             height = pokemon.height,
             baseExperience = pokemon.baseExperience,
-            image = pokemon.image
+            image = pokemon.image,
+            weight = pokemon.weight
         )
     }
 
     fun mapDomainToDatabase(ability: Ability): EntityAbility {
         return EntityAbility(
             abilityName = ability.name
+        )
+    }
+
+    fun mapDomainToDatabase(pokemon: Pokemon, ability: Ability): PokemonAbilityCrossRef {
+        return PokemonAbilityCrossRef(
+            abilityName = ability.name,
+            pokemonName = pokemon.name
         )
     }
 

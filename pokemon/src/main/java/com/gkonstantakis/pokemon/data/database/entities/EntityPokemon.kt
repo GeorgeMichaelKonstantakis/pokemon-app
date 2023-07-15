@@ -16,6 +16,9 @@ data class EntityPokemon(
     @ColumnInfo(name = "height")
     var height: Int,
 
+    @ColumnInfo(name = "weight")
+    var weight: Int,
+
     @ColumnInfo(name = "image")
     var image: String
 ) {}

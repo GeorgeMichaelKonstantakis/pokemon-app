@@ -4,6 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.325" />
+        <entry key="pokemon/src/main/res/drawable/image_shape.xml" value="0.195" />
+        <entry key="pokemon/src/main/res/layout/activity_main.xml" value="0.3390625" />
+        <entry key="pokemon/src/main/res/layout/fragment_pokemon.xml" value="0.3390625" />
       </map>
     </option>
   </component>

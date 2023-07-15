@@ -4,5 +4,6 @@ data class Pokemon(
     var name: String,
     var baseExperience: Int,
     var height: Int,
-    var image: String
+    var image: String,
+    var weight: Int
 ) {}
