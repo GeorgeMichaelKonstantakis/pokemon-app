@@ -5,12 +5,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "pokemons")
-data class EntityPokemon(
+data class DatabasePokemon(
     @PrimaryKey
-    @ColumnInfo(name = "pokemon_name")
+    @ColumnInfo(name = "pokemonName")
     var pokemonName: String,
 
-    @ColumnInfo(name = "base_experience")
+    @ColumnInfo(name = "baseExperience")
     var baseExperience: Int,
 
     @ColumnInfo(name = "height")

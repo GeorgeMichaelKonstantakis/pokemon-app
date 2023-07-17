@@ -25,7 +25,7 @@ class PokemonRepositoryImpl(
         emit(PokemonState.Loading)
         try {
             val networkPokemons = pokemonNetworkService.getPokemons("20", "0")
-            var domainPokemons = ArrayList<Pokemon>()
+            val domainPokemons = ArrayList<Pokemon>()
             networkPokemons.pokemons.forEach { pokemon ->
                 val pokemonInfo = pokemonNetworkService.getPokemonInfo(pokemon.url)
                 val domainPokemon = networkMapper.mapNetworkToDomainPokemon(pokemon, pokemonInfo)
@@ -48,7 +48,7 @@ class PokemonRepositoryImpl(
                 domainPokemons.add(domainPokemon)
             }
 
-            emit(PokemonState.NetworkSuccess(domainPokemons))
+            emit(PokemonState.Success(domainPokemons))
 
         } catch (networkException: Exception) {
             Log.e(
@@ -60,7 +60,7 @@ class PokemonRepositoryImpl(
                 val domainPokemons =
                     databaseMapper.mapDatabaseListToDomainPokemonList(databasePokemons)
 
-                emit(PokemonState.DatabaseSuccess(domainPokemons))
+                emit(PokemonState.Success(domainPokemons))
             } catch (databaseException: Exception) {
                 Log.e(
                     "PokemonRepository",
@@ -84,7 +84,7 @@ class PokemonRepositoryImpl(
                         )
                     )
                 }
-                emit(PokemonInfoState.DatabaseSuccess(domainPokemonsWithAbilities))
+                emit(PokemonInfoState.Success(domainPokemonsWithAbilities))
             } catch (databaseException: Exception) {
                 Log.e(
                     "PokemonRepository",

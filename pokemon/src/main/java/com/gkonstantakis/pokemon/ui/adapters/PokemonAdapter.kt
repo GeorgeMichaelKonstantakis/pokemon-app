@@ -2,26 +2,43 @@ package com.gkonstantakis.pokemon.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gkonstantakis.pokemon.databinding.PokemonItemBinding
 import com.gkonstantakis.pokemon.ui.activities.MainActivity
 import com.gkonstantakis.pokemon.ui.mappers.UiMapper
-import com.gkonstantakis.pokemon.ui.models.EventAdapterItem
 import com.gkonstantakis.pokemon.ui.models.PokemonAdapterItem
 import com.gkonstantakis.pokemon.ui.viewModels.PokemonViewModel
 
 class PokemonAdapter(
-    var pokemonItems: MutableList<PokemonAdapterItem>,
-    val uiMapper: UiMapper,
-    val pokemonViewModel: PokemonViewModel,
-    private val activity: MainActivity
+    val viewModel: PokemonViewModel
 ) :
     RecyclerView.Adapter<PokemonAdapter.PokemonItemViewHolder>() {
 
-    inner class PokemonItemViewHolder(var pokemonItemBinding: PokemonItemBinding) :
-        RecyclerView.ViewHolder(pokemonItemBinding.root)
+    inner class PokemonItemViewHolder(val binding: PokemonItemBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
+    private val differCallback = object : DiffUtil.ItemCallback<PokemonAdapterItem>() {
+        override fun areItemsTheSame(
+            oldItem: PokemonAdapterItem,
+            newItem: PokemonAdapterItem
+        ): Boolean {
+            return oldItem.name == newItem.name
+        }
+
+        override fun areContentsTheSame(
+            oldItem: PokemonAdapterItem,
+            newItem: PokemonAdapterItem
+        ): Boolean {
+            return oldItem.image == newItem.image
+        }
+
+    }
+
+    val differ = AsyncListDiffer(this, differCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokemonItemViewHolder {
         return PokemonItemViewHolder(
@@ -34,27 +51,23 @@ class PokemonAdapter(
     }
 
     override fun onBindViewHolder(holder: PokemonItemViewHolder, position: Int) {
-        val binding = holder.pokemonItemBinding
-        holder.itemView.apply {
-            val pokemonItem = pokemonItems[holder.adapterPosition]
-
-            val name = binding.pokemonName
-            val image = binding.pokemonImage
-            val detailsButton = binding.pokemonDetailsButton
+        val pokemonItem = differ.currentList[position]
+        holder.binding.apply {
+            val name = this.pokemonName
+            val image = this.pokemonImage
+            val detailsButton = this.pokemonDetailsButton
 
             name.text = pokemonItem.name
 
             detailsButton.setOnClickListener {
-
+                viewModel.setStateEvent(PokemonViewModel.StateEvent.GetPokemonInfo(pokemonItem.name))
             }
 
-            Glide.with(context).load(pokemonItem.image)
+            Glide.with(root.context).load(pokemonItem.image)
                 .apply(RequestOptions.circleCropTransform())
                 .into(image);
         }
     }
 
-    override fun getItemCount(): Int {
-        return pokemonItems.size
-    }
+    override fun getItemCount() = differ.currentList.size
 }

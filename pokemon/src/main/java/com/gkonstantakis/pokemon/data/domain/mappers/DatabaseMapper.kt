@@ -1,7 +1,7 @@
 package com.gkonstantakis.pokemon.data.domain.mappers
 
-import com.gkonstantakis.pokemon.data.database.entities.EntityAbility
-import com.gkonstantakis.pokemon.data.database.entities.EntityPokemon
+import com.gkonstantakis.pokemon.data.database.entities.DatabaseAbility
+import com.gkonstantakis.pokemon.data.database.entities.DatabasePokemon
 import com.gkonstantakis.pokemon.data.database.entities.PokemonAbilityCrossRef
 import com.gkonstantakis.pokemon.data.database.entities.joins.JoinPokemonWithAbilities
 import com.gkonstantakis.pokemon.data.domain.models.Ability
@@ -10,31 +10,31 @@ import com.gkonstantakis.pokemon.data.domain.models.PokemonWIthAbilities
 
 class DatabaseMapper {
 
-    fun mapDatabaseToDomain(entityPokemon: EntityPokemon): Pokemon {
+    fun mapDatabaseToDomain(databasePokemon: DatabasePokemon): Pokemon {
         return Pokemon(
-            name = entityPokemon.pokemonName,
-            baseExperience = entityPokemon.baseExperience,
-            height = entityPokemon.height,
-            image = entityPokemon.image,
-            weight = entityPokemon.weight
+            name = databasePokemon.pokemonName,
+            baseExperience = databasePokemon.baseExperience,
+            height = databasePokemon.height,
+            image = databasePokemon.image,
+            weight = databasePokemon.weight
         )
     }
 
-    fun mapDatabaseToDomain(entityAbility: EntityAbility): Ability {
+    fun mapDatabaseToDomain(databaseAbility: DatabaseAbility): Ability {
         return Ability(
-            name = entityAbility.abilityName
+            name = databaseAbility.abilityName
         )
     }
 
     fun mapDatabaseToDomain(joinPokemonWithAbilities: JoinPokemonWithAbilities): PokemonWIthAbilities {
         return PokemonWIthAbilities(
-            pokemon = mapDatabaseToDomain(joinPokemonWithAbilities.entityPokemon),
-            abilities = mapDatabaseToDomainAbilitiesList(joinPokemonWithAbilities.entityAbilities)
+            pokemon = mapDatabaseToDomain(joinPokemonWithAbilities.databasePokemon),
+            abilities = mapDatabaseToDomainAbilitiesList(joinPokemonWithAbilities.databaseAbilities)
         )
     }
 
-    fun mapDomainToDatabase(pokemon: Pokemon): EntityPokemon {
-        return EntityPokemon(
+    fun mapDomainToDatabase(pokemon: Pokemon): DatabasePokemon {
+        return DatabasePokemon(
             pokemonName = pokemon.name,
             height = pokemon.height,
             baseExperience = pokemon.baseExperience,
@@ -43,8 +43,8 @@ class DatabaseMapper {
         )
     }
 
-    fun mapDomainToDatabase(ability: Ability): EntityAbility {
-        return EntityAbility(
+    fun mapDomainToDatabase(ability: Ability): DatabaseAbility {
+        return DatabaseAbility(
             abilityName = ability.name
         )
     }
@@ -56,13 +56,13 @@ class DatabaseMapper {
         )
     }
 
-    fun mapDatabaseToDomainAbilitiesList(abilities: List<EntityAbility>): List<Ability> {
+    fun mapDatabaseToDomainAbilitiesList(abilities: List<DatabaseAbility>): List<Ability> {
         return abilities.map {
             mapDatabaseToDomain(it)
         }
     }
 
-    fun mapDatabaseListToDomainPokemonList(pokemons: List<EntityPokemon>): List<Pokemon> {
+    fun mapDatabaseListToDomainPokemonList(pokemons: List<DatabasePokemon>): List<Pokemon> {
         return pokemons.map {
             mapDatabaseToDomain(it)
         }

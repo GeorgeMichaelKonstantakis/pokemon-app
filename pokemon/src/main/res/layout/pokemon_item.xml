@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/pokemon_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_80sdp"
         android:background="@drawable/pokemon_background"
         app:layout_constraintBottom_toTopOf="@id/pokemon_name"
         app:layout_constraintStart_toStartOf="parent"

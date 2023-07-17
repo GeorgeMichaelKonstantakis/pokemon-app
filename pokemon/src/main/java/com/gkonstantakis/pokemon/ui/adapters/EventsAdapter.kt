@@ -3,23 +3,38 @@ package com.gkonstantakis.pokemon.ui.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.gkonstantakis.pokemon.R
 import com.gkonstantakis.pokemon.databinding.EventItemBinding
-import com.gkonstantakis.pokemon.ui.activities.MainActivity
 import com.gkonstantakis.pokemon.ui.models.EventAdapterItem
-import com.gkonstantakis.pokemon.ui.viewModels.PokemonViewModel
 
 
-class EventsAdapter(
-    var eventItems: MutableList<EventAdapterItem>,
-    val pokemonViewModel: PokemonViewModel,
-    private val activity: MainActivity
-) :
+class EventsAdapter() :
     RecyclerView.Adapter<EventsAdapter.EventItemViewHolder>() {
 
-    inner class EventItemViewHolder(var eventItemBinding: EventItemBinding) :
-        RecyclerView.ViewHolder(eventItemBinding.root)
+    inner class EventItemViewHolder(val binding: EventItemBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
+    private val differCallback = object : DiffUtil.ItemCallback<EventAdapterItem>() {
+        override fun areItemsTheSame(
+            oldItem: EventAdapterItem,
+            newItem: EventAdapterItem
+        ): Boolean {
+            return true
+        }
+
+        override fun areContentsTheSame(
+            oldItem: EventAdapterItem,
+            newItem: EventAdapterItem
+        ): Boolean {
+            return true
+        }
+
+    }
+
+    val differ = AsyncListDiffer(this, differCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventItemViewHolder {
         return EventItemViewHolder(
@@ -32,14 +47,12 @@ class EventsAdapter(
     }
 
     override fun onBindViewHolder(holder: EventItemViewHolder, position: Int) {
-        val binding = holder.eventItemBinding
-        holder.itemView.apply {
-            val eventItem = eventItems[holder.adapterPosition]
-
-            val image = binding.eventImage
-            val subtitle = binding.eventSubtitle
-            val date = binding.eventDate
-            val city = binding.eventCity
+        val eventItem = differ.currentList[position]
+        holder.binding.apply {
+            val image = this.eventImage
+            val subtitle = this.eventSubtitle
+            val date = this.eventDate
+            val city = this.eventCity
 
             subtitle.text = eventItem.subtitle
             date.text = eventItem.date
@@ -47,7 +60,7 @@ class EventsAdapter(
 
             image.setImageDrawable(
                 ResourcesCompat.getDrawable(
-                    resources,
+                    root.context.resources,
                     eventItem.imageResID,
                     null
                 )
@@ -55,7 +68,5 @@ class EventsAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return eventItems.size
-    }
+    override fun getItemCount() = differ.currentList.size
 }
