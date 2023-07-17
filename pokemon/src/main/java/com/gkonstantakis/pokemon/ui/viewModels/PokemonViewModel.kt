@@ -9,9 +9,11 @@ import com.gkonstantakis.pokemon.data.domain.models.PokemonWIthAbilities
 import com.gkonstantakis.pokemon.data.repositories.PokemonRepository
 import com.gkonstantakis.pokemon.data.state.PokemonInfoState
 import com.gkonstantakis.pokemon.data.state.PokemonState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PokemonViewModel(
     private val pokemonRepository: PokemonRepository
@@ -37,14 +39,23 @@ class PokemonViewModel(
                         _pokemonState.value = pokemonState
                     }.launchIn(viewModelScope)
                 }
+            }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            when (stateEvent) {
                 is StateEvent.GetPokemonInfo -> {
-                    pokemonRepository.getDatabasePokemonWithAbilities(stateEvent.pokemonName)
-                        .onEach { pokemonInfoState ->
-                            _pokemonInfoState.value = pokemonInfoState
-                        }.launchIn(viewModelScope)
+                    withContext(Dispatchers.IO) {
+                        pokemonRepository.getDatabasePokemonWithAbilities(stateEvent.pokemonName)
+                            .onEach { pokemonInfoState ->
+                                _pokemonInfoState.value = pokemonInfoState
+                            }.launchIn(viewModelScope)
+                    }
                 }
             }
         }
+
+
     }
 
     sealed class StateEvent {

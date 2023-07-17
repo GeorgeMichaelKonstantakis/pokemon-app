@@ -68,4 +68,10 @@ class DatabaseMapper {
         }
     }
 
+    fun mapDatabaseListToDomainPokemonWithAbilitiesList(pokemonWithAbilities: List<JoinPokemonWithAbilities>): List<PokemonWIthAbilities> {
+        return pokemonWithAbilities.map {
+            mapDatabaseToDomain(it)
+        }
+    }
+
 }

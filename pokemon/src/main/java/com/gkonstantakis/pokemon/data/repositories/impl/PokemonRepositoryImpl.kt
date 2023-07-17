@@ -76,14 +76,7 @@ class PokemonRepositoryImpl(
             emit(PokemonInfoState.Loading)
             try {
                 val databasePokemonsWithAbilities = pokemonDao.getPokemonWithAbilitiesById(name)
-                val domainPokemonsWithAbilities = ArrayList<PokemonWIthAbilities>()
-                databasePokemonsWithAbilities.forEach { pokemonWithAbilities ->
-                    domainPokemonsWithAbilities.add(
-                        databaseMapper.mapDatabaseToDomain(
-                            pokemonWithAbilities
-                        )
-                    )
-                }
+                val domainPokemonsWithAbilities = databaseMapper.mapDatabaseListToDomainPokemonWithAbilitiesList(databasePokemonsWithAbilities)
                 emit(PokemonInfoState.Success(domainPokemonsWithAbilities))
             } catch (databaseException: Exception) {
                 Log.e(

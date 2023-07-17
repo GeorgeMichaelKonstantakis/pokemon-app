@@ -12,6 +12,7 @@ import com.gkonstantakis.pokemon.ui.activities.MainActivity
 import com.gkonstantakis.pokemon.ui.mappers.UiMapper
 import com.gkonstantakis.pokemon.ui.models.PokemonAdapterItem
 import com.gkonstantakis.pokemon.ui.viewModels.PokemonViewModel
+import kotlinx.coroutines.runBlocking
 
 class PokemonAdapter(
     val viewModel: PokemonViewModel
@@ -63,6 +64,12 @@ class PokemonAdapter(
                 viewModel.setStateEvent(PokemonViewModel.StateEvent.GetPokemonInfo(pokemonItem.name))
             }
 
+            root.setOnClickListener {
+                onItemClickListener?.let {
+                    it(pokemonItem)
+                }
+            }
+
             Glide.with(root.context).load(pokemonItem.image)
                 .apply(RequestOptions.circleCropTransform())
                 .into(image);
@@ -70,4 +77,10 @@ class PokemonAdapter(
     }
 
     override fun getItemCount() = differ.currentList.size
+
+    private var onItemClickListener: ((PokemonAdapterItem) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: (PokemonAdapterItem) -> Unit) {
+        onItemClickListener = listener
+    }
 }

@@ -58,13 +58,15 @@ class EventsAdapter() :
             date.text = eventItem.date
             city.text = eventItem.city
 
-            image.setImageDrawable(
-                ResourcesCompat.getDrawable(
-                    root.context.resources,
-                    eventItem.imageResID,
-                    null
-                )
-            )
+            image.background = root.context.getDrawable(eventItem.imageResID)
+
+//            image.setImageDrawable(
+//                ResourcesCompat.getDrawable(
+//                    root.context.resources,
+//                    eventItem.imageResID,
+//                    null
+//                )
+//            )
         }
     }
 

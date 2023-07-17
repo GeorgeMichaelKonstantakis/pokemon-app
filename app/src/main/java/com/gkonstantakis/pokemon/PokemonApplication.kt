@@ -29,7 +29,7 @@ class PokemonApplication : Application() {
                 applicationContext,
                 PokemonDatabase::class.java,
                 PokemonDatabase.POKEMON_DB
-            )
+            ).allowMainThreadQueries()
             .build()
 
         pokemonDao = (pokemonDB as PokemonDatabase).pokemonDao()

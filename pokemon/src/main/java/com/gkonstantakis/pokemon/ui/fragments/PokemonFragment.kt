@@ -1,6 +1,7 @@
 package com.gkonstantakis.pokemon.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +24,7 @@ import com.gkonstantakis.pokemon.ui.models.PokemonAdapterItem
 import com.gkonstantakis.pokemon.ui.models.PokemonWithAbilitiesItem
 import com.gkonstantakis.pokemon.ui.utils.Events
 import com.gkonstantakis.pokemon.ui.viewModels.PokemonViewModel
+import kotlinx.coroutines.runBlocking
 
 class PokemonFragment : Fragment() {
 
@@ -70,9 +72,10 @@ class PokemonFragment : Fragment() {
 
     fun setupUI() {
         setupRecyclerViews()
+        setupPokemonAdapterItemClick()
     }
 
-    open fun setupRecyclerViews() {
+    fun setupRecyclerViews() {
         eventsAdapter = EventsAdapter()
         eventsListRecyclerView = binding.eventsListRv
         eventsListRecyclerView.apply {
@@ -92,6 +95,12 @@ class PokemonFragment : Fragment() {
         }
     }
 
+    fun setupPokemonAdapterItemClick() {
+        pokemonAdapter.setOnItemClickListener {
+            viewModel.setStateEvent(PokemonViewModel.StateEvent.GetPokemonInfo(it.name))
+        }
+    }
+
     private fun subscribeObservers() {
         viewModel.pokemonState.observe(viewLifecycleOwner, Observer { pokemonState ->
             when (pokemonState) {
@@ -101,7 +110,11 @@ class PokemonFragment : Fragment() {
                     if (pokemonState.data.isNullOrEmpty()) {
                         binding.networkErrorText.visibility = View.VISIBLE
                     } else {
-                        pokemonAdapter.differ.submitList(UiMapper().mapDomainToUIPokemonList(pokemonState.data))
+                        pokemonAdapter.differ.submitList(
+                            UiMapper().mapDomainToUIPokemonList(
+                                pokemonState.data
+                            )
+                        )
                     }
                 }
                 is PokemonState.Error -> {
@@ -124,7 +137,9 @@ class PokemonFragment : Fragment() {
                     if (pokemonInfoState.data.isNullOrEmpty()) {
 
                     } else {
-                        val pokemonWithAbilities = UiMapper().mapDomainToUIPokemonWithAbilitiesList(pokemonInfoState.data).first()
+                        val pokemonWithAbilities =
+                            UiMapper().mapDomainToUIPokemonWithAbilitiesList(pokemonInfoState.data)
+                                .first()
                         showPokemonInfo(pokemonWithAbilities)
                     }
                 }
@@ -149,11 +164,22 @@ class PokemonFragment : Fragment() {
     }
 
     private fun showPokemonInfo(pokemonWIthAbilitiesItem: PokemonWithAbilitiesItem) {
+
+        binding.pokemonListRv.visibility = View.GONE
+
+        Log.e("pokemonName", "pokemonName: " + pokemonWIthAbilitiesItem.name)
+
         binding.pokemonInfoArea.visibility = View.VISIBLE
-        binding.pokemonNameTv.text = requireContext().resources.getString(R.string.name_txt) + pokemonWIthAbilitiesItem.name
-        binding.pokemonBaseExperienceTv.text = requireContext().resources.getString(R.string.base_experience_txt) + pokemonWIthAbilitiesItem.baseExperience
-        binding.pokemonNameTv.text = requireContext().resources.getString(R.string.weight_txt) + pokemonWIthAbilitiesItem.weight
-        binding.pokemonNameTv.text = requireContext().resources.getString(R.string.height_txt) + pokemonWIthAbilitiesItem.height
+        binding.pokemonNameTv.text =
+            requireContext().resources.getString(R.string.name_txt) + pokemonWIthAbilitiesItem.name
+        binding.pokemonBaseExperienceTv.text =
+            requireContext().resources.getString(R.string.base_experience_txt) + pokemonWIthAbilitiesItem.baseExperience
+        binding.pokemonWeightTv.text =
+            requireContext().resources.getString(R.string.weight_txt) + pokemonWIthAbilitiesItem.weight
+        binding.pokemonHeightTv.text =
+            requireContext().resources.getString(R.string.height_txt) + pokemonWIthAbilitiesItem.height
+
+        Log.e("pokemonName", "pokemonName: " + binding.pokemonNameTv.text)
 
         var abilitiesText = requireContext().resources.getString(R.string.abilities_txt)
 
@@ -161,10 +187,12 @@ class PokemonFragment : Fragment() {
             abilitiesText = abilitiesText + ability + ", "
         }
 
-        binding.pokemonAbilitiesTv.text = abilitiesText.substring(0, abilitiesText.lastIndexOf(","));
+        binding.pokemonAbilitiesTv.text =
+            abilitiesText.substring(0, abilitiesText.lastIndexOf(","));
 
         binding.pokemonDismissButton.setOnClickListener {
             binding.pokemonInfoArea.visibility = View.GONE
+            binding.pokemonListRv.visibility = View.VISIBLE
         }
     }
 }
