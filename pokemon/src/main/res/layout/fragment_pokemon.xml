@@ -160,12 +160,13 @@
                 android:layout_marginStart="@dimen/_10sdp"
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:visibility="gone"
+                android:elevation="2dp"
                 android:background="@drawable/pokemon_info_background"
                 android:paddingBottom="@dimen/_10sdp"
                 app:layout_constraintBottom_toBottomOf="@id/pokemon_area"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_goneMarginBottom="@dimen/_10sdp">
+                app:layout_constraintTop_toTopOf="@id/pokemon_area"
+                app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
                     android:id="@+id/pokemon_name_tv"
@@ -302,7 +303,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_height="@dimen/_20sdp"
                 android:layout_marginTop="@dimen/_20sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/pokemon_area" />

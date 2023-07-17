@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gkonstantakis.pokemon.ModuleApplication
 import com.gkonstantakis.pokemon.data.domain.models.Pokemon
 import com.gkonstantakis.pokemon.data.domain.models.PokemonWIthAbilities
-import com.gkonstantakis.pokemon.data.repositories.PokemonRepository
 import com.gkonstantakis.pokemon.data.state.PokemonInfoState
 import com.gkonstantakis.pokemon.data.state.PokemonState
 import kotlinx.coroutines.Dispatchers
@@ -15,9 +15,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PokemonViewModel(
-    private val pokemonRepository: PokemonRepository
-) : ViewModel() {
+class PokemonViewModel() : ViewModel() {
 
     private val _pokemonState: MutableLiveData<PokemonState<List<Pokemon>>> =
         MutableLiveData()
@@ -35,9 +33,15 @@ class PokemonViewModel(
         viewModelScope.launch {
             when (stateEvent) {
                 is StateEvent.GetPokemons -> {
-                    pokemonRepository.getNetworkPokemon().onEach { pokemonState ->
+                    ModuleApplication.pokemonRepository.getNetworkPokemon().onEach { pokemonState ->
                         _pokemonState.value = pokemonState
                     }.launchIn(viewModelScope)
+                }
+                is StateEvent.GetPagingPokemons -> {
+                    ModuleApplication.pokemonRepository.getNetworkPagingPokemon()
+                        .onEach { pokemonState ->
+                            _pokemonState.value = pokemonState
+                        }.launchIn(viewModelScope)
                 }
             }
         }
@@ -46,7 +50,9 @@ class PokemonViewModel(
             when (stateEvent) {
                 is StateEvent.GetPokemonInfo -> {
                     withContext(Dispatchers.IO) {
-                        pokemonRepository.getDatabasePokemonWithAbilities(stateEvent.pokemonName)
+                        ModuleApplication.pokemonRepository.getDatabasePokemonWithAbilities(
+                            stateEvent.pokemonName
+                        )
                             .onEach { pokemonInfoState ->
                                 _pokemonInfoState.value = pokemonInfoState
                             }.launchIn(viewModelScope)
@@ -60,6 +66,8 @@ class PokemonViewModel(
 
     sealed class StateEvent {
         object GetPokemons : StateEvent()
+
+        object GetPagingPokemons : StateEvent()
 
         data class GetPokemonInfo(var pokemonName: String) : StateEvent()
     }

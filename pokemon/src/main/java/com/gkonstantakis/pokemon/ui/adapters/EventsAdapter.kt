@@ -2,11 +2,9 @@ package com.gkonstantakis.pokemon.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.gkonstantakis.pokemon.R
 import com.gkonstantakis.pokemon.databinding.EventItemBinding
 import com.gkonstantakis.pokemon.ui.models.EventAdapterItem
 
@@ -59,14 +57,6 @@ class EventsAdapter() :
             city.text = eventItem.city
 
             image.background = root.context.getDrawable(eventItem.imageResID)
-
-//            image.setImageDrawable(
-//                ResourcesCompat.getDrawable(
-//                    root.context.resources,
-//                    eventItem.imageResID,
-//                    null
-//                )
-//            )
         }
     }
 

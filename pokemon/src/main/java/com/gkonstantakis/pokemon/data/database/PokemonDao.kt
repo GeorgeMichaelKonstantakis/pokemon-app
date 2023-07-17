@@ -3,6 +3,7 @@ package com.gkonstantakis.pokemon.data.database
 import androidx.room.*
 import com.gkonstantakis.pokemon.data.database.entities.DatabaseAbility
 import com.gkonstantakis.pokemon.data.database.entities.DatabasePokemon
+import com.gkonstantakis.pokemon.data.database.entities.DatabasePokemonPaging
 import com.gkonstantakis.pokemon.data.database.entities.PokemonAbilityCrossRef
 import com.gkonstantakis.pokemon.data.database.entities.joins.JoinPokemonWithAbilities
 
@@ -24,4 +25,10 @@ interface PokemonDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPokemonAbilityCrossRef(pokemonAbilityCrossRef: PokemonAbilityCrossRef): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertOrUpdatePaging(databasePokemonPaging: DatabasePokemonPaging): Long
+
+    @Query("SELECT * FROM POKEMON_PAGING")
+    suspend fun getPaging(): List<DatabasePokemonPaging>
 }

@@ -8,14 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gkonstantakis.pokemon.databinding.PokemonItemBinding
-import com.gkonstantakis.pokemon.ui.activities.MainActivity
-import com.gkonstantakis.pokemon.ui.mappers.UiMapper
 import com.gkonstantakis.pokemon.ui.models.PokemonAdapterItem
 import com.gkonstantakis.pokemon.ui.viewModels.PokemonViewModel
-import kotlinx.coroutines.runBlocking
 
 class PokemonAdapter(
-    val viewModel: PokemonViewModel
+    private val viewModel: PokemonViewModel
 ) :
     RecyclerView.Adapter<PokemonAdapter.PokemonItemViewHolder>() {
 

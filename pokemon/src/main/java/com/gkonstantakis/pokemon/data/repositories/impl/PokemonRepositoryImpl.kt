@@ -4,6 +4,7 @@ import android.util.Log
 import com.gkonstantakis.pokemon.data.database.PokemonDao
 import com.gkonstantakis.pokemon.data.domain.mappers.DatabaseMapper
 import com.gkonstantakis.pokemon.data.domain.mappers.NetworkMapper
+import com.gkonstantakis.pokemon.data.domain.models.Paging
 import com.gkonstantakis.pokemon.data.domain.models.Pokemon
 import com.gkonstantakis.pokemon.data.domain.models.PokemonWIthAbilities
 import com.gkonstantakis.pokemon.data.network.PokemonNetworkService
@@ -32,8 +33,6 @@ class PokemonRepositoryImpl(
 
                 pokemonInfo.abilities.forEach { ability ->
                     val domainAbility = networkMapper.mapNetworkToDomainAbility(ability)
-                    val domainPokemonAbility =
-                        networkMapper.mapNetworkToDomainPokemonWithAbilities(ability, pokemon)
 
                     pokemonDao.insertAbility(databaseMapper.mapDomainToDatabase(domainAbility))
                     pokemonDao.insertPokemonAbilityCrossRef(
@@ -48,7 +47,10 @@ class PokemonRepositoryImpl(
                 domainPokemons.add(domainPokemon)
             }
 
-            emit(PokemonState.Success(domainPokemons))
+            val paging = Paging(networkPokemons.next)
+            pokemonDao.insertOrUpdatePaging(databaseMapper.mapDomainToDatabase(paging))
+
+            emit(PokemonState.SuccessPokemon(domainPokemons))
 
         } catch (networkException: Exception) {
             Log.e(
@@ -60,7 +62,7 @@ class PokemonRepositoryImpl(
                 val domainPokemons =
                     databaseMapper.mapDatabaseListToDomainPokemonList(databasePokemons)
 
-                emit(PokemonState.Success(domainPokemons))
+                emit(PokemonState.SuccessPokemon(domainPokemons))
             } catch (databaseException: Exception) {
                 Log.e(
                     "PokemonRepository",
@@ -71,12 +73,54 @@ class PokemonRepositoryImpl(
         }
     }
 
+    override suspend fun getNetworkPagingPokemon(): Flow<PokemonState<List<Pokemon>>> = flow {
+        emit(PokemonState.Loading)
+        try {
+            val oldPaging = pokemonDao.getPaging().first()
+            val networkPokemons = pokemonNetworkService.getPokemons(oldPaging.pagingUrl)
+            val domainPokemons = ArrayList<Pokemon>()
+            networkPokemons.pokemons.forEach { pokemon ->
+                val pokemonInfo = pokemonNetworkService.getPokemonInfo(pokemon.url)
+                val domainPokemon = networkMapper.mapNetworkToDomainPokemon(pokemon, pokemonInfo)
+
+                pokemonInfo.abilities.forEach { ability ->
+                    val domainAbility = networkMapper.mapNetworkToDomainAbility(ability)
+
+                    pokemonDao.insertAbility(databaseMapper.mapDomainToDatabase(domainAbility))
+                    pokemonDao.insertPokemonAbilityCrossRef(
+                        databaseMapper.mapDomainToDatabase(
+                            domainPokemon,
+                            domainAbility
+                        )
+                    )
+                }
+
+                pokemonDao.insertPokemon(databaseMapper.mapDomainToDatabase(domainPokemon))
+                domainPokemons.add(domainPokemon)
+            }
+
+            val paging = Paging(networkPokemons.next)
+            pokemonDao.insertOrUpdatePaging(databaseMapper.mapDomainToDatabase(paging))
+
+            emit(PokemonState.SuccessPagingPokemon(domainPokemons))
+
+        } catch (networkException: Exception) {
+            Log.e(
+                "PokemonRepository",
+                "getNetworkPagingPokemon failed with networkException: $networkException"
+            )
+            emit(PokemonState.Error("Network Error"))
+        }
+    }
+
     override suspend fun getDatabasePokemonWithAbilities(name: String): Flow<PokemonInfoState<List<PokemonWIthAbilities>>> =
         flow {
-            emit(PokemonInfoState.Loading)
             try {
                 val databasePokemonsWithAbilities = pokemonDao.getPokemonWithAbilitiesById(name)
-                val domainPokemonsWithAbilities = databaseMapper.mapDatabaseListToDomainPokemonWithAbilitiesList(databasePokemonsWithAbilities)
+                val domainPokemonsWithAbilities =
+                    databaseMapper.mapDatabaseListToDomainPokemonWithAbilitiesList(
+                        databasePokemonsWithAbilities
+                    )
                 emit(PokemonInfoState.Success(domainPokemonsWithAbilities))
             } catch (databaseException: Exception) {
                 Log.e(

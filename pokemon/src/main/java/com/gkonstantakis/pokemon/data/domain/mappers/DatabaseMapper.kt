@@ -2,9 +2,11 @@ package com.gkonstantakis.pokemon.data.domain.mappers
 
 import com.gkonstantakis.pokemon.data.database.entities.DatabaseAbility
 import com.gkonstantakis.pokemon.data.database.entities.DatabasePokemon
+import com.gkonstantakis.pokemon.data.database.entities.DatabasePokemonPaging
 import com.gkonstantakis.pokemon.data.database.entities.PokemonAbilityCrossRef
 import com.gkonstantakis.pokemon.data.database.entities.joins.JoinPokemonWithAbilities
 import com.gkonstantakis.pokemon.data.domain.models.Ability
+import com.gkonstantakis.pokemon.data.domain.models.Paging
 import com.gkonstantakis.pokemon.data.domain.models.Pokemon
 import com.gkonstantakis.pokemon.data.domain.models.PokemonWIthAbilities
 
@@ -74,4 +76,16 @@ class DatabaseMapper {
         }
     }
 
+    fun mapDomainToDatabase(pokemonPaging: Paging): DatabasePokemonPaging {
+        return DatabasePokemonPaging(
+            id = "paging",
+            pagingUrl = pokemonPaging.pagingUrl
+        )
+    }
+
+    fun mapDatabaseToDomain(pokemonPaging: DatabasePokemonPaging): Paging {
+        return Paging(
+            pagingUrl = pokemonPaging.pagingUrl
+        )
+    }
 }

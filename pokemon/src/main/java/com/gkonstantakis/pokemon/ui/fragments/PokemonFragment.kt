@@ -1,16 +1,15 @@
 package com.gkonstantakis.pokemon.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.gkonstantakis.pokemon.ModuleApplication
-import com.gkonstantakis.pokemon.R
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gkonstantakis.pokemon.R
 import com.gkonstantakis.pokemon.data.domain.models.Pokemon
 import com.gkonstantakis.pokemon.data.domain.models.PokemonWIthAbilities
 import com.gkonstantakis.pokemon.data.state.PokemonInfoState
@@ -19,17 +18,17 @@ import com.gkonstantakis.pokemon.databinding.FragmentPokemonBinding
 import com.gkonstantakis.pokemon.ui.adapters.EventsAdapter
 import com.gkonstantakis.pokemon.ui.adapters.PokemonAdapter
 import com.gkonstantakis.pokemon.ui.mappers.UiMapper
-import com.gkonstantakis.pokemon.ui.models.EventAdapterItem
 import com.gkonstantakis.pokemon.ui.models.PokemonAdapterItem
 import com.gkonstantakis.pokemon.ui.models.PokemonWithAbilitiesItem
 import com.gkonstantakis.pokemon.ui.utils.Events
+import com.gkonstantakis.pokemon.ui.utils.GeneralUtils
 import com.gkonstantakis.pokemon.ui.viewModels.PokemonViewModel
-import kotlinx.coroutines.runBlocking
+
 
 class PokemonFragment : Fragment() {
 
     private var _binding: FragmentPokemonBinding? = null
-    val binding get() = _binding!!
+    private val binding get() = _binding!!
 
     private lateinit var viewModel: PokemonViewModel
 
@@ -40,15 +39,8 @@ class PokemonFragment : Fragment() {
     private lateinit var pokemonListRecyclerView: RecyclerView
 
     private var pokemonList: MutableList<PokemonAdapterItem> = ArrayList<PokemonAdapterItem>()
-    private lateinit var pokemonAdapterLinearLayoutManager: LinearLayoutManager
 
-    private var eventList: MutableList<EventAdapterItem> = ArrayList<EventAdapterItem>()
-    private lateinit var eventsAdapterLinearLayoutManager: LinearLayoutManager
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    private var isLoading = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,7 +53,7 @@ class PokemonFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = PokemonViewModel(ModuleApplication.pokemonRepository)
+        viewModel = PokemonViewModel()
 
         setupUI()
 
@@ -73,6 +65,7 @@ class PokemonFragment : Fragment() {
     fun setupUI() {
         setupRecyclerViews()
         setupPokemonAdapterItemClick()
+        initScrollListener()
     }
 
     fun setupRecyclerViews() {
@@ -101,21 +94,49 @@ class PokemonFragment : Fragment() {
         }
     }
 
+    private fun initScrollListener() {
+        pokemonListRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                if (!isLoading) {
+                    if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == pokemonAdapter.itemCount - 1) {
+                        if (GeneralUtils().isInternetConnected(requireContext())) {
+                            viewModel.setStateEvent(PokemonViewModel.StateEvent.GetPagingPokemons)
+                            isLoading = true
+                        }
+                    }
+                }
+            }
+        })
+    }
+
     private fun subscribeObservers() {
         viewModel.pokemonState.observe(viewLifecycleOwner, Observer { pokemonState ->
             when (pokemonState) {
-                is PokemonState.Success<List<Pokemon>> -> {
+                is PokemonState.SuccessPokemon<List<Pokemon>> -> {
                     dataLoading(false)
                     binding.networkErrorText.visibility = View.GONE
                     if (pokemonState.data.isNullOrEmpty()) {
                         binding.networkErrorText.visibility = View.VISIBLE
                     } else {
-                        pokemonAdapter.differ.submitList(
-                            UiMapper().mapDomainToUIPokemonList(
-                                pokemonState.data
-                            )
-                        )
+                        pokemonList =
+                            UiMapper().mapDomainToUIPokemonList(pokemonState.data) as MutableList<PokemonAdapterItem>
+                        pokemonAdapter.differ.submitList(pokemonList)
                     }
+                }
+                is PokemonState.SuccessPagingPokemon<List<Pokemon>> -> {
+                    dataLoading(false)
+                    binding.networkErrorText.visibility = View.GONE
+                    if (!pokemonState.data.isNullOrEmpty()) {
+                        pokemonList = (pokemonList + (UiMapper().mapDomainToUIPokemonList(pokemonState.data) as MutableList<PokemonAdapterItem>)).toMutableList()
+                        pokemonAdapter.differ.submitList(pokemonList)
+                    }
+                    isLoading = false
                 }
                 is PokemonState.Error -> {
                     binding.networkErrorText.visibility = View.VISIBLE
@@ -134,9 +155,7 @@ class PokemonFragment : Fragment() {
         viewModel.pokemonInfoState.observe(viewLifecycleOwner, Observer { pokemonInfoState ->
             when (pokemonInfoState) {
                 is PokemonInfoState.Success<List<PokemonWIthAbilities>> -> {
-                    if (pokemonInfoState.data.isNullOrEmpty()) {
-
-                    } else {
+                    if (!pokemonInfoState.data.isNullOrEmpty()) {
                         val pokemonWithAbilities =
                             UiMapper().mapDomainToUIPokemonWithAbilitiesList(pokemonInfoState.data)
                                 .first()
@@ -144,12 +163,11 @@ class PokemonFragment : Fragment() {
                     }
                 }
                 is PokemonInfoState.Error -> {
-
-                }
-                is PokemonInfoState.Loading -> {
-                }
-                else -> {
-
+                    Toast.makeText(
+                        requireContext(),
+                        requireContext().resources.getString(R.string.pokemon_info_error),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         })
@@ -164,31 +182,24 @@ class PokemonFragment : Fragment() {
     }
 
     private fun showPokemonInfo(pokemonWIthAbilitiesItem: PokemonWithAbilitiesItem) {
-
-        binding.pokemonListRv.visibility = View.GONE
-
-        Log.e("pokemonName", "pokemonName: " + pokemonWIthAbilitiesItem.name)
-
         binding.pokemonInfoArea.visibility = View.VISIBLE
+
         binding.pokemonNameTv.text =
-            requireContext().resources.getString(R.string.name_txt) + pokemonWIthAbilitiesItem.name
+            requireContext().resources.getString(R.string.name_txt) + " : " + (pokemonWIthAbilitiesItem.name).toUpperCase()
         binding.pokemonBaseExperienceTv.text =
-            requireContext().resources.getString(R.string.base_experience_txt) + pokemonWIthAbilitiesItem.baseExperience
+            requireContext().resources.getString(R.string.base_experience_txt) + " : " + pokemonWIthAbilitiesItem.baseExperience
         binding.pokemonWeightTv.text =
-            requireContext().resources.getString(R.string.weight_txt) + pokemonWIthAbilitiesItem.weight
+            requireContext().resources.getString(R.string.weight_txt) + " : " + pokemonWIthAbilitiesItem.weight
         binding.pokemonHeightTv.text =
-            requireContext().resources.getString(R.string.height_txt) + pokemonWIthAbilitiesItem.height
+            requireContext().resources.getString(R.string.height_txt) + " : " + pokemonWIthAbilitiesItem.height
 
-        Log.e("pokemonName", "pokemonName: " + binding.pokemonNameTv.text)
-
-        var abilitiesText = requireContext().resources.getString(R.string.abilities_txt)
-
+        var abilitiesText = requireContext().resources.getString(R.string.abilities_txt) + " : "
         pokemonWIthAbilitiesItem.abilities.forEach { ability ->
-            abilitiesText = abilitiesText + ability + ", "
+            abilitiesText = "$abilitiesText$ability - "
         }
 
         binding.pokemonAbilitiesTv.text =
-            abilitiesText.substring(0, abilitiesText.lastIndexOf(","));
+            abilitiesText.substring(0, abilitiesText.lastIndexOf("-"));
 
         binding.pokemonDismissButton.setOnClickListener {
             binding.pokemonInfoArea.visibility = View.GONE
