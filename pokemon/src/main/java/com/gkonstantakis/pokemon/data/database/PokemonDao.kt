@@ -12,7 +12,7 @@ interface PokemonDao {
 
     @Transaction
     @Query("SELECT * FROM POKEMONS WHERE POKEMONNAME = :name")
-    fun getPokemonWithAbilitiesById(name: String): List<JoinPokemonWithAbilities>
+    fun getPokemonWithAbilitiesByName(name: String): List<JoinPokemonWithAbilities>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPokemon(databasePokemon: DatabasePokemon): Long

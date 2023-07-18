@@ -1,4 +1,4 @@
-package com.gkonstantakis.pokemon
+package com.gkonstantakis.pokemon.ui.application
 
 import com.gkonstantakis.pokemon.data.database.PokemonDao
 import com.gkonstantakis.pokemon.data.database.PokemonDatabase

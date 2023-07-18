@@ -10,6 +10,7 @@ import com.gkonstantakis.pokemon.data.domain.mappers.NetworkMapper
 import com.gkonstantakis.pokemon.data.network.PokemonNetworkService
 import com.gkonstantakis.pokemon.data.repositories.PokemonRepository
 import com.gkonstantakis.pokemon.data.repositories.impl.PokemonRepositoryImpl
+import com.gkonstantakis.pokemon.ui.application.ModuleApplication
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
@@ -29,7 +30,7 @@ class PokemonApplication : Application() {
                 applicationContext,
                 PokemonDatabase::class.java,
                 PokemonDatabase.POKEMON_DB
-            ).allowMainThreadQueries()
+            )
             .build()
 
         pokemonDao = (pokemonDB as PokemonDatabase).pokemonDao()

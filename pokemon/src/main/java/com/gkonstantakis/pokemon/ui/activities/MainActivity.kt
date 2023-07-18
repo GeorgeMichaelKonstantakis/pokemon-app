@@ -14,10 +14,6 @@ class MainActivity : androidx.fragment.app.FragmentActivity() {
         activityViewBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = activityViewBinding.root
         setContentView(view)
-    }
-
-    override fun onResume() {
-        super.onResume()
         navigateToPokemonScreen()
     }
 

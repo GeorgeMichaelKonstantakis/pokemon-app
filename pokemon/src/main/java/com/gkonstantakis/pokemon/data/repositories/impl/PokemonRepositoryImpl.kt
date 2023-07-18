@@ -116,7 +116,7 @@ class PokemonRepositoryImpl(
     override suspend fun getDatabasePokemonWithAbilities(name: String): Flow<PokemonInfoState<List<PokemonWIthAbilities>>> =
         flow {
             try {
-                val databasePokemonsWithAbilities = pokemonDao.getPokemonWithAbilitiesById(name)
+                val databasePokemonsWithAbilities = pokemonDao.getPokemonWithAbilitiesByName(name)
                 val domainPokemonsWithAbilities =
                     databaseMapper.mapDatabaseListToDomainPokemonWithAbilitiesList(
                         databasePokemonsWithAbilities

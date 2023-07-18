@@ -4,11 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gkonstantakis.pokemon.ModuleApplication
+import com.gkonstantakis.pokemon.ui.application.ModuleApplication
 import com.gkonstantakis.pokemon.data.domain.models.Pokemon
 import com.gkonstantakis.pokemon.data.domain.models.PokemonWIthAbilities
 import com.gkonstantakis.pokemon.data.state.PokemonInfoState
 import com.gkonstantakis.pokemon.data.state.PokemonState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -46,7 +47,8 @@ class PokemonViewModel() : ViewModel() {
             }
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
+        val scope = CoroutineScope(Dispatchers.Default)
+        scope.launch {
             when (stateEvent) {
                 is StateEvent.GetPokemonInfo -> {
                     withContext(Dispatchers.IO) {
@@ -54,8 +56,8 @@ class PokemonViewModel() : ViewModel() {
                             stateEvent.pokemonName
                         )
                             .onEach { pokemonInfoState ->
-                                _pokemonInfoState.value = pokemonInfoState
-                            }.launchIn(viewModelScope)
+                                _pokemonInfoState.postValue(pokemonInfoState)
+                            }.launchIn(scope)
                     }
                 }
             }
