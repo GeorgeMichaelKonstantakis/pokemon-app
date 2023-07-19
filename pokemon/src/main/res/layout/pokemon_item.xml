@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/_110sdp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/_10sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/_5sdp"
+    android:background="@drawable/pokemon_card_background">
+
+    <ImageView
+        android:id="@+id/pokemon_image"
+        android:layout_width="@dimen/_70sdp"
+        android:layout_height="@dimen/_70sdp"
+        android:background="@drawable/pokemon_real_background"
+        app:layout_constraintBottom_toTopOf="@id/pokemon_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/pokemon_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pokemon Name"
+        android:textSize="@dimen/_12sdp"
+        android:textColor="@color/colorTextWhite"
+        app:layout_constraintBottom_toTopOf="@id/pokemon_details_button"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingBottom="@dimen/_15sdp"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
+        android:id="@+id/pokemon_details_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/button_background"
+        android:text="@string/pokemon_btn_text"
+        android:textColor="@color/colorBackgroundSurfaceDark"
+        android:textSize="@dimen/_12sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

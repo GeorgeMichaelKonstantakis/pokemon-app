@@ -1,0 +1,31 @@
+<resources>
+    <string name="main_event_subtitle_txt">Popular in Kanto</string>
+    <string name="main_event_name_text">The Dream Continues!</string>
+    <string name="main_event_date_text">Tue 4 Oct</string>
+    <string name="main_event_city_text">Pallet Town</string>
+
+    <string name="events_title_string">This week</string>
+
+    <string name="pokemon_title">Popular Pokemon</string>
+
+    <string name="pokemon_btn_text">Details</string>
+
+    <string name="event_one_subtitle_txt">Legend? Go! Friends? Go!</string>
+    <string name="event_one_date_txt">Sun 18 Oct</string>
+    <string name="event_one_city_txt">Cinnabar Island</string>
+
+    <string name="event_two_subtitle_txt">EXHALE with Professor Oak</string>
+    <string name="event_two_date_txt">Sun 18 Oct</string>
+    <string name="event_two_city_txt">Celadon City</string>
+
+    <string name="name_txt">Name</string>
+    <string name="base_experience_txt">Base experience</string>
+    <string name="weight_txt">Weight</string>
+    <string name="height_txt">Height</string>
+    <string name="abilities_txt">Abilities</string>
+
+    <string name="network_error_message">No Internet Connection. Please try again.</string>
+
+    <string name="pokemon_info_error">Could not get pokemon info.</string>
+
+</resources>

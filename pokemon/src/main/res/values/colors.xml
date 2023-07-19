@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Text-->
+    <color name="colorTextWhite">#FFFFFF</color>
+    <color name="colorTextLightGray">#C2C2C2</color>
+    <color name="colorTextAcid">#DDFF55</color>
+
+    <!--Background-->
+    <color name="colorBackgroundBlack">#161616</color>
+    <color name="colorBackgroundAcid">#DDFF55</color>
+    <color name="colorBackgroundSurfaceGray">#323232</color>
+    <color name="colorBackgroundSurfaceDark">#222222</color>
+</resources>
