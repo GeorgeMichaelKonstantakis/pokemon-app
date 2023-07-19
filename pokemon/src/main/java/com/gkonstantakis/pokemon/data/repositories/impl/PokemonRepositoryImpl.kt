@@ -22,6 +22,12 @@ class PokemonRepositoryImpl(
     private val networkMapper: NetworkMapper
 ) : PokemonRepository {
 
+    /**
+     * Downloads the first 20 pokemon from the PokeAPI, and for each pokemon,
+     * downloads the necessary info for it (image url, stats etc). Then this method saves the necessary
+     * entities in the database, and emits the domain Pokemon list. If network request fails, it
+     * fetches all the pokemon from the sqlite, if there are any.
+     */
     override suspend fun getNetworkPokemon(): Flow<PokemonState<List<Pokemon>>> = flow {
         emit(PokemonState.Loading)
         try {
@@ -73,6 +79,12 @@ class PokemonRepositoryImpl(
         }
     }
 
+    /**
+     * Downloads the next 20 pokemon data from the PokeAPI, according to the paging field value, and for each pokemon,
+     * downloads the necessary info for it (image url, stats etc). Then this method saves the necessary
+     * entities in the database, and emits the domain Pokemon list. If network request fails, it
+     * fetches all the pokemon from the sqlite, if there are any.
+     */
     override suspend fun getNetworkPagingPokemon(): Flow<PokemonState<List<Pokemon>>> = flow {
         emit(PokemonState.Loading)
         try {
@@ -113,6 +125,10 @@ class PokemonRepositoryImpl(
         }
     }
 
+    /**
+     * Query the database in order to fetch the required pokemon and a list of its' abilities into
+     * a single object.
+     */
     override suspend fun getDatabasePokemonWithAbilities(name: String): Flow<PokemonInfoState<List<PokemonWIthAbilities>>> =
         flow {
             try {
