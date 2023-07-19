@@ -8,6 +8,7 @@ import com.gkonstantakis.pokemon.data.domain.models.Pokemon
 import com.gkonstantakis.pokemon.data.repositories.PokemonRepository
 import com.gkonstantakis.pokemon.data.repositories.TestPokemonRepositoryImpl
 import com.gkonstantakis.pokemon.data.state.PokemonState
+import com.gkonstantakis.pokemon.data.testData.TestPokemonData
 import com.gkonstantakis.pokemon.ui.mappers.UiMapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,9 +44,9 @@ class PokemonViewModelTests {
                 is PokemonState.SuccessPokemon<List<Pokemon>> -> {
                     val pokemonList =
                         UiMapper().mapDomainToUIPokemonList(pokemonState.data)
-                    pokemonList.forEach {
-                        Log.e("pokemon: ", "pokemon: " + it.name)
-                        Log.e("pokemon: ", "pokemon: " + it.image)
+                    val pokemonAdapterTestData = TestPokemonData.getPokemonAdapterItemData()
+                    pokemonList.forEachIndexed { index, pokemonAdapterItem ->
+                        assert(pokemonAdapterItem == pokemonAdapterTestData[index])
                     }
                 }
             }

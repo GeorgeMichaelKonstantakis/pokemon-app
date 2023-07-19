@@ -3,6 +3,8 @@ package com.gkonstantakis.pokemon.data.testData
 import com.gkonstantakis.pokemon.data.domain.models.Ability
 import com.gkonstantakis.pokemon.data.domain.models.Pokemon
 import com.gkonstantakis.pokemon.data.domain.models.PokemonWIthAbilities
+import com.gkonstantakis.pokemon.ui.models.PokemonAdapterItem
+import com.gkonstantakis.pokemon.ui.models.PokemonWithAbilitiesItem
 
 object TestPokemonData {
 
@@ -52,6 +54,52 @@ object TestPokemonData {
         return pokemons
     }
 
+    fun getPokemonAdapterItemData(): List<PokemonAdapterItem> {
+        val pokemons = ArrayList<PokemonAdapterItem>()
+
+        pokemons.add(
+            PokemonAdapterItem("bulbasaur", "bulbasaur")
+        )
+
+        pokemons.add(
+            PokemonAdapterItem("charmander", "charmander")
+        )
+
+        pokemons.add(
+            PokemonAdapterItem("charizard", "charizard")
+        )
+
+        pokemons.add(
+            PokemonAdapterItem("blastoise", "blastoise")
+        )
+
+        pokemons.add(
+            PokemonAdapterItem("metapod", "metapod")
+        )
+
+        pokemons.add(
+            PokemonAdapterItem("weedle", "weedle")
+        )
+
+        pokemons.add(
+            PokemonAdapterItem("beedrill", "beedrill")
+        )
+
+        pokemons.add(
+            PokemonAdapterItem("rattata", "rattata")
+        )
+
+        pokemons.add(
+            PokemonAdapterItem("pikachu", "pikachu")
+        )
+
+        pokemons.add(
+            PokemonAdapterItem("nidorino", "nidorino")
+        )
+
+        return pokemons
+    }
+
     fun getPokemonsWithAbilities(): List<PokemonWIthAbilities> {
         val pokemonsWithAbilities = ArrayList<PokemonWIthAbilities>()
 
@@ -74,6 +122,25 @@ object TestPokemonData {
         )
         val pokemonWithAbilities = PokemonWIthAbilities(
             pokemon = pokemon,
+            abilities = abilities
+        )
+        pokemonsWithAbilities.add(pokemonWithAbilities)
+        return pokemonsWithAbilities
+    }
+
+    fun getPokemonsWithAbilitiesItems(): List<PokemonWithAbilitiesItem> {
+        val pokemonsWithAbilities = ArrayList<PokemonWithAbilitiesItem>()
+
+        val pokemon = Pokemon("nidorino", 128, 9, "nidorino", 195)
+        val abilities = ArrayList<String>()
+        abilities.add("hustle")
+        abilities.add("poison-point")
+        abilities.add("rivarly")
+        val pokemonWithAbilities = PokemonWithAbilitiesItem(
+            name = pokemon.name,
+            weight = pokemon.weight,
+            height = pokemon.height,
+            baseExperience = pokemon.baseExperience,
             abilities = abilities
         )
         pokemonsWithAbilities.add(pokemonWithAbilities)
