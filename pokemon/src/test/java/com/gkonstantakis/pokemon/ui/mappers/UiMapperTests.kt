@@ -7,11 +7,11 @@ import org.junit.Before
 
 class UiMapperTests {
 
-    private lateinit var pokemons: List<Po>
+   // private lateinit var pokemons: List<Po>
 
     @Before
     fun setup() {
-        pokemonRepository = TestPokemonRepositoryImpl()
-        productRepository.setNewProducts(TestProducts().createTestProducts())
+//        pokemonRepository = TestPokemonRepositoryImpl()
+//        productRepository.setNewProducts(TestProducts().createTestProducts())
     }
 }

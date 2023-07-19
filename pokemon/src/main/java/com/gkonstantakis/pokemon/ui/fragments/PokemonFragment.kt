@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gkonstantakis.pokemon.ModuleApplication
 import com.gkonstantakis.pokemon.R
 import com.gkonstantakis.pokemon.data.domain.models.Pokemon
 import com.gkonstantakis.pokemon.data.domain.models.PokemonWIthAbilities
@@ -53,7 +54,7 @@ class PokemonFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = PokemonViewModel()
+        viewModel = ModuleApplication.appContainer.pokemonViewModelFactory.create()
 
         setupUI()
 

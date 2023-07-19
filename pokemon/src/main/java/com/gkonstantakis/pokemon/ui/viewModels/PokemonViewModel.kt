@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gkonstantakis.pokemon.ui.application.ModuleApplication
 import com.gkonstantakis.pokemon.data.domain.models.Pokemon
 import com.gkonstantakis.pokemon.data.domain.models.PokemonWIthAbilities
+import com.gkonstantakis.pokemon.data.repositories.PokemonRepository
 import com.gkonstantakis.pokemon.data.state.PokemonInfoState
 import com.gkonstantakis.pokemon.data.state.PokemonState
 import kotlinx.coroutines.CoroutineScope
@@ -16,7 +16,10 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PokemonViewModel() : ViewModel() {
+class PokemonViewModel(private val pokemonRepository: PokemonRepository) : ViewModel() {
+
+    var vMScope = viewModelScope
+    var defaultScope = CoroutineScope(Dispatchers.Default)
 
     private val _pokemonState: MutableLiveData<PokemonState<List<Pokemon>>> =
         MutableLiveData()
@@ -31,33 +34,32 @@ class PokemonViewModel() : ViewModel() {
         get() = _pokemonInfoState
 
     fun setStateEvent(stateEvent: StateEvent) {
-        viewModelScope.launch {
+        vMScope.launch {
             when (stateEvent) {
                 is StateEvent.GetPokemons -> {
-                    ModuleApplication.pokemonRepository.getNetworkPokemon().onEach { pokemonState ->
-                        _pokemonState.value = pokemonState
+                    pokemonRepository.getNetworkPokemon().onEach { pokemonState ->
+                        _pokemonState.postValue(pokemonState)
                     }.launchIn(viewModelScope)
                 }
                 is StateEvent.GetPagingPokemons -> {
-                    ModuleApplication.pokemonRepository.getNetworkPagingPokemon()
+                    pokemonRepository.getNetworkPagingPokemon()
                         .onEach { pokemonState ->
-                            _pokemonState.value = pokemonState
-                        }.launchIn(viewModelScope)
+                            _pokemonState.postValue(pokemonState)
+                        }.launchIn(vMScope)
                 }
             }
         }
 
-        val scope = CoroutineScope(Dispatchers.Default)
-        scope.launch {
+        defaultScope.launch {
             when (stateEvent) {
                 is StateEvent.GetPokemonInfo -> {
                     withContext(Dispatchers.IO) {
-                        ModuleApplication.pokemonRepository.getDatabasePokemonWithAbilities(
+                        pokemonRepository.getDatabasePokemonWithAbilities(
                             stateEvent.pokemonName
                         )
                             .onEach { pokemonInfoState ->
                                 _pokemonInfoState.postValue(pokemonInfoState)
-                            }.launchIn(scope)
+                            }.launchIn(defaultScope)
                     }
                 }
             }

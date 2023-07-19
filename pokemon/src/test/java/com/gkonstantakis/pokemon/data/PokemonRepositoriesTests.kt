@@ -10,7 +10,7 @@ class PokemonRepositoriesTests {
 
     @Before
     fun setup() {
-        pokemonRepository = PokemonRepositoryImpl()
-        productRepository.setNewProducts(TestProducts().createTestProducts())
+//        pokemonRepository = PokemonRepositoryImpl()
+//        productRepository.setNewProducts(TestProducts().createTestProducts())
     }
 }
