@@ -31,7 +31,7 @@ class PokemonRepositoryImpl(
     override suspend fun getNetworkPokemon(): Flow<PokemonState<List<Pokemon>>> = flow {
         emit(PokemonState.Loading)
         try {
-            val networkPokemons = pokemonNetworkService.getPokemons("20", "0")
+            val networkPokemons = pokemonNetworkService.getPokemons()
             val domainPokemons = ArrayList<Pokemon>()
             networkPokemons.pokemons.forEach { pokemon ->
                 val pokemonInfo = pokemonNetworkService.getPokemonInfo(pokemon.url)

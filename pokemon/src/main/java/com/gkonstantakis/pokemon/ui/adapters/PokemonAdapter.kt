@@ -68,7 +68,6 @@ class PokemonAdapter(
             }
 
             Glide.with(root.context).load(pokemonItem.image)
-                .apply(RequestOptions.circleCropTransform())
                 .into(image);
         }
     }

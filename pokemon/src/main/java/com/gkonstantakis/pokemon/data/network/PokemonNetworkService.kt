@@ -11,7 +11,7 @@ interface PokemonNetworkService {
 
     @GET("pokemon")
     @Headers("Content-Type: application/json","Accept: application/json")
-    suspend fun getPokemons(@Query("limit") limit: String, @Query("offset") offset: String): NetworkPokemons
+    suspend fun getPokemons(): NetworkPokemons
 
     @GET
     @Headers("Content-Type: application/json","Accept: application/json")
