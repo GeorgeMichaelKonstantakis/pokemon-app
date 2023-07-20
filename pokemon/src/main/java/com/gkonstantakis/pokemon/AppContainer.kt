@@ -24,6 +24,7 @@ class AppContainer {
 
     lateinit var pokemonRepository: PokemonRepository
     lateinit var pokemonViewModelFactory: PokemonViewModelFactory
+    lateinit var appContext: Context
 
     fun init(context: Context) {
         pokemonDB = Room
@@ -48,6 +49,8 @@ class AppContainer {
             )
 
         pokemonViewModelFactory = PokemonViewModelFactory(pokemonRepository)
+
+        appContext = context
     }
 
 
