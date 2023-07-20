@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.gkonstantakis.pokemon.ModuleApplication
 import com.gkonstantakis.pokemon.data.domain.models.Pokemon
 import com.gkonstantakis.pokemon.data.domain.models.PokemonWIthAbilities
 import com.gkonstantakis.pokemon.data.repositories.PokemonRepository
@@ -62,16 +65,26 @@ class PokemonViewModel(private val pokemonRepository: PokemonRepository) : ViewM
                             }.launchIn(defaultScope)
                     }
                 }
+                is StateEvent.LoadPokemonImages -> {
+                    withContext(Dispatchers.IO) {
+                        stateEvent.pokemonList.forEach {
+                            Glide.with(ModuleApplication.appContainer.appContext)
+                                .load(it.image)
+                                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                                .preload();
+                        }
+                    }
+                }
             }
         }
-
-
     }
 
     sealed class StateEvent {
         object GetPokemons : StateEvent()
 
         object GetPagingPokemons : StateEvent()
+
+        data class LoadPokemonImages(var pokemonList: List<Pokemon>) : StateEvent()
 
         data class GetPokemonInfo(var pokemonName: String) : StateEvent()
     }

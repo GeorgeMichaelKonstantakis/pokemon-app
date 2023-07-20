@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.gkonstantakis.pokemon.ModuleApplication
 import com.gkonstantakis.pokemon.R
 import com.gkonstantakis.pokemon.data.domain.models.Pokemon
@@ -125,6 +127,11 @@ class PokemonFragment : Fragment() {
                     if (pokemonState.data.isNullOrEmpty()) {
                         binding.networkErrorText.visibility = View.VISIBLE
                     } else {
+                        viewModel.setStateEvent(
+                            PokemonViewModel.StateEvent.LoadPokemonImages(
+                                pokemonState.data
+                            )
+                        )
                         pokemonList =
                             UiMapper().mapDomainToUIPokemonList(pokemonState.data) as MutableList<PokemonAdapterItem>
                         pokemonAdapter.differ.submitList(pokemonList)
@@ -134,8 +141,15 @@ class PokemonFragment : Fragment() {
                     dataLoading(false)
                     binding.networkErrorText.visibility = View.GONE
                     if (!pokemonState.data.isNullOrEmpty()) {
-                        pokemonList = (pokemonList + (UiMapper().mapDomainToUIPokemonList(pokemonState.data) as MutableList<PokemonAdapterItem>)).toMutableList()
+                        viewModel.setStateEvent(
+                            PokemonViewModel.StateEvent.LoadPokemonImages(
+                                pokemonState.data
+                            )
+                        )
+                        pokemonList =
+                            (pokemonList + (UiMapper().mapDomainToUIPokemonList(pokemonState.data) as MutableList<PokemonAdapterItem>)).toMutableList()
                         pokemonAdapter.differ.submitList(pokemonList)
+
                     }
                     isLoading = false
                 }
