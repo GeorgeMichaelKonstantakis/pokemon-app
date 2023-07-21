@@ -9,6 +9,7 @@ import com.gkonstantakis.pokemon.data.domain.models.Ability
 import com.gkonstantakis.pokemon.data.domain.models.Paging
 import com.gkonstantakis.pokemon.data.domain.models.Pokemon
 import com.gkonstantakis.pokemon.data.domain.models.PokemonWIthAbilities
+import com.gkonstantakis.pokemon.data.domain.models.auxiliary.PokemonAbility
 
 class DatabaseMapper {
 
@@ -51,10 +52,10 @@ class DatabaseMapper {
         )
     }
 
-    fun mapDomainToDatabase(pokemon: Pokemon, ability: Ability): PokemonAbilityCrossRef {
+    fun mapDomainToDatabase(pokemonAbility: PokemonAbility): PokemonAbilityCrossRef {
         return PokemonAbilityCrossRef(
-            abilityName = ability.name,
-            pokemonName = pokemon.name
+            abilityName = pokemonAbility.abilityName,
+            pokemonName = pokemonAbility.pokemonName
         )
     }
 

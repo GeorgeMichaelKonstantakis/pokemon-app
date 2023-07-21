@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.gkonstantakis.pokemon.data.database.testData.TestData
 import com.gkonstantakis.pokemon.data.domain.mappers.DatabaseMapper
+import com.gkonstantakis.pokemon.data.domain.models.auxiliary.PokemonAbility
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -52,17 +53,17 @@ class PokemonDaoTests {
 
             val ability = TestData.getTestAbility()
 
-            val pokemonAbilityCrossRef = databaseMapper.mapDomainToDatabase(
-                pokemon,
-                ability
+            val pokemonAbility = PokemonAbility(
+                pokemonName = pokemon.name,
+                abilityName = ability.name
             )
+
 
             pokemonDao.insertPokemon(databaseMapper.mapDomainToDatabase(pokemon))
             pokemonDao.insertAbility(databaseMapper.mapDomainToDatabase(ability))
             pokemonDao.insertPokemonAbilityCrossRef(
                 databaseMapper.mapDomainToDatabase(
-                    pokemon,
-                    ability
+                    pokemonAbility
                 )
             )
 

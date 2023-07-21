@@ -5,6 +5,8 @@ sealed class PokemonState<out R> {
 
     data class SuccessPagingPokemon<out T>(val data: T) : PokemonState<T>()
 
+    data class SuccessDatabasePokemon<out T>(val data: T) : PokemonState<T>()
+
     data class Error(val message: String) : PokemonState<Nothing>()
 
     object Loading : PokemonState<Nothing>()

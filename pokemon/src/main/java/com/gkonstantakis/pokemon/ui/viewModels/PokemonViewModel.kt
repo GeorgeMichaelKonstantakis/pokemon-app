@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.gkonstantakis.pokemon.ModuleApplication
+import com.gkonstantakis.pokemon.data.domain.logic.PokemonLogic
 import com.gkonstantakis.pokemon.data.domain.models.Pokemon
 import com.gkonstantakis.pokemon.data.domain.models.PokemonWIthAbilities
-import com.gkonstantakis.pokemon.data.repositories.PokemonRepository
 import com.gkonstantakis.pokemon.data.state.PokemonInfoState
 import com.gkonstantakis.pokemon.data.state.PokemonState
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PokemonViewModel(private val pokemonRepository: PokemonRepository) : ViewModel() {
+class PokemonViewModel(private val pokemonLogic: PokemonLogic) : ViewModel() {
 
     var vMScope = viewModelScope
     var defaultScope = CoroutineScope(Dispatchers.Default)
@@ -40,12 +40,18 @@ class PokemonViewModel(private val pokemonRepository: PokemonRepository) : ViewM
         vMScope.launch {
             when (stateEvent) {
                 is StateEvent.GetPokemons -> {
-                    pokemonRepository.getNetworkPokemon().onEach { pokemonState ->
+                    pokemonLogic.getNetworkPokemon().onEach { pokemonState ->
                         _pokemonState.postValue(pokemonState)
                     }.launchIn(viewModelScope)
                 }
                 is StateEvent.GetPagingPokemons -> {
-                    pokemonRepository.getNetworkPagingPokemon()
+                    pokemonLogic.getNetworkPagingPokemon()
+                        .onEach { pokemonState ->
+                            _pokemonState.postValue(pokemonState)
+                        }.launchIn(vMScope)
+                }
+                is StateEvent.GetDatabasePokemons -> {
+                    pokemonLogic.getDatabasePokemon()
                         .onEach { pokemonState ->
                             _pokemonState.postValue(pokemonState)
                         }.launchIn(vMScope)
@@ -57,7 +63,7 @@ class PokemonViewModel(private val pokemonRepository: PokemonRepository) : ViewM
             when (stateEvent) {
                 is StateEvent.GetPokemonInfo -> {
                     withContext(Dispatchers.IO) {
-                        pokemonRepository.getDatabasePokemonWithAbilities(
+                        pokemonLogic.getDatabasePokemonWithAbilities(
                             stateEvent.pokemonName
                         )
                             .onEach { pokemonInfoState ->
@@ -83,6 +89,8 @@ class PokemonViewModel(private val pokemonRepository: PokemonRepository) : ViewM
         object GetPokemons : StateEvent()
 
         object GetPagingPokemons : StateEvent()
+
+        object GetDatabasePokemons : StateEvent()
 
         data class LoadPokemonImages(var pokemonList: List<Pokemon>) : StateEvent()
 

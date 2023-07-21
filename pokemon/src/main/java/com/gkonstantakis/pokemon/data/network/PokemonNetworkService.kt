@@ -9,10 +9,6 @@ import retrofit2.http.Url
 
 interface PokemonNetworkService {
 
-    @GET("pokemon")
-    @Headers("Content-Type: application/json","Accept: application/json")
-    suspend fun getPokemons(): NetworkPokemons
-
     @GET
     @Headers("Content-Type: application/json","Accept: application/json")
     suspend fun getPokemons(@Url url: String): NetworkPokemons
