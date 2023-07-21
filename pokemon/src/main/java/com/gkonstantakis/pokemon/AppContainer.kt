@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.gkonstantakis.pokemon.data.config.BuildConfiguration
 import com.gkonstantakis.pokemon.data.database.PokemonDao
 import com.gkonstantakis.pokemon.data.database.PokemonDatabase
+import com.gkonstantakis.pokemon.data.domain.logic.PokemonLogic
+import com.gkonstantakis.pokemon.data.domain.logic.impl.PokemonLogicImpl
 import com.gkonstantakis.pokemon.data.domain.mappers.DatabaseMapper
 import com.gkonstantakis.pokemon.data.domain.mappers.NetworkMapper
 import com.gkonstantakis.pokemon.data.network.PokemonNetworkService
@@ -23,6 +25,7 @@ class AppContainer {
     private lateinit var pokemonNetworkService: PokemonNetworkService
 
     lateinit var pokemonRepository: PokemonRepository
+    lateinit var pokemonLogic: PokemonLogic
     lateinit var pokemonViewModelFactory: PokemonViewModelFactory
     lateinit var appContext: Context
 
@@ -48,7 +51,9 @@ class AppContainer {
                 pokemonDao, DatabaseMapper(), NetworkMapper()
             )
 
-        pokemonViewModelFactory = PokemonViewModelFactory(pokemonRepository)
+        pokemonLogic = PokemonLogicImpl(pokemonRepository)
+
+        pokemonViewModelFactory = PokemonViewModelFactory(pokemonLogic)
 
         appContext = context
     }

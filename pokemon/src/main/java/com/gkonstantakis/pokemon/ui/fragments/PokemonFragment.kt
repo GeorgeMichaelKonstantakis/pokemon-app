@@ -1,6 +1,7 @@
 package com.gkonstantakis.pokemon.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -153,9 +154,24 @@ class PokemonFragment : Fragment() {
                     }
                     isLoading = false
                 }
-                is PokemonState.Error -> {
-                    binding.networkErrorText.visibility = View.VISIBLE
+                is PokemonState.SuccessDatabasePokemon<List<Pokemon>> -> {
                     dataLoading(false)
+                    binding.networkErrorText.visibility = View.GONE
+                    if (!pokemonState.data.isNullOrEmpty()) {
+                        pokemonList =
+                            (pokemonList + (UiMapper().mapDomainToUIPokemonList(pokemonState.data) as MutableList<PokemonAdapterItem>)).toMutableList()
+                        pokemonAdapter.differ.submitList(pokemonList)
+
+                    }
+                    isLoading = false
+                }
+                is PokemonState.Error -> {
+                    if(pokemonState.message == "network_pokemon_error") {
+                        viewModel.setStateEvent(PokemonViewModel.StateEvent.GetDatabasePokemons)
+                    } else {
+                        binding.networkErrorText.visibility = View.VISIBLE
+                        dataLoading(false)
+                    }
                 }
                 is PokemonState.Loading -> {
                     dataLoading(true)
@@ -171,6 +187,9 @@ class PokemonFragment : Fragment() {
             when (pokemonInfoState) {
                 is PokemonInfoState.Success<List<PokemonWIthAbilities>> -> {
                     if (!pokemonInfoState.data.isNullOrEmpty()) {
+                        pokemonInfoState.data.first().abilities.forEach {
+                            Log.e("AbilitiyUI","AbilityUI: " + it.name)
+                        }
                         val pokemonWithAbilities =
                             UiMapper().mapDomainToUIPokemonWithAbilitiesList(pokemonInfoState.data)
                                 .first()

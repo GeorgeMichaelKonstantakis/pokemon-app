@@ -3,6 +3,9 @@ package com.gkonstantakis.pokemon.data.testData
 import com.gkonstantakis.pokemon.data.domain.models.Ability
 import com.gkonstantakis.pokemon.data.domain.models.Pokemon
 import com.gkonstantakis.pokemon.data.domain.models.PokemonWIthAbilities
+import com.gkonstantakis.pokemon.data.domain.models.auxiliary.PokemonInfo
+import com.gkonstantakis.pokemon.data.domain.models.auxiliary.PokemonWithNoInfo
+import com.gkonstantakis.pokemon.data.domain.models.auxiliary.PokemonWithNoInfoAndPaging
 import com.gkonstantakis.pokemon.ui.models.PokemonAdapterItem
 import com.gkonstantakis.pokemon.ui.models.PokemonWithAbilitiesItem
 
@@ -170,6 +173,99 @@ object TestPokemonData {
             abilities = abilities
         )
         return pokemonWithAbilities
+    }
+
+    fun getPokemonWithNoInfoAndPagingList(): PokemonWithNoInfoAndPaging {
+        return PokemonWithNoInfoAndPaging(
+            paging = "paging",
+            pokemonWithNoInfoList = getPokemonWithNoInfoList()
+        )
+    }
+
+    fun getPokemonWithNoInfoList(): List<PokemonWithNoInfo> {
+        val pokemonWithNoInfoList = ArrayList<PokemonWithNoInfo>()
+
+        pokemonWithNoInfoList.add(
+            PokemonWithNoInfo(
+                name = "bulbasaur",
+                pokemonUrl = "bulbasaur"
+            )
+        )
+
+        pokemonWithNoInfoList.add(
+            PokemonWithNoInfo(
+                name = "charmander",
+                pokemonUrl = "charmander"
+            )
+        )
+
+        pokemonWithNoInfoList.add(
+            PokemonWithNoInfo(
+                name = "charizard",
+                pokemonUrl = "charizard"
+            )
+        )
+
+        pokemonWithNoInfoList.add(
+            PokemonWithNoInfo(
+                name = "blastoise",
+                pokemonUrl = "blastoise"
+            )
+        )
+
+        pokemonWithNoInfoList.add(
+            PokemonWithNoInfo(
+                name = "metapod",
+                pokemonUrl = "metapod"
+            )
+        )
+
+        pokemonWithNoInfoList.add(
+            PokemonWithNoInfo(
+                name = "weedle",
+                pokemonUrl = "weedle"
+            )
+        )
+
+        pokemonWithNoInfoList.add(
+            PokemonWithNoInfo(
+                name = "beedrill",
+                pokemonUrl = "beedrill"
+            )
+        )
+
+        pokemonWithNoInfoList.add(
+            PokemonWithNoInfo(
+                name = "rattata",
+                pokemonUrl = "rattata"
+            )
+        )
+
+        pokemonWithNoInfoList.add(
+            PokemonWithNoInfo(
+                name = "pikachu",
+                pokemonUrl = "pikachu"
+            )
+        )
+
+        pokemonWithNoInfoList.add(
+            PokemonWithNoInfo(
+                name = "nidorino",
+                pokemonUrl = "nidorino"
+            )
+        )
+
+        return pokemonWithNoInfoList
+    }
+
+    fun getPokemonInfo(): PokemonInfo {
+        return PokemonInfo(
+            baseExperience = 100,
+            weight = 100,
+            height = 100,
+            image ="image",
+            abilities = ArrayList<Ability>()
+        )
     }
 
 
